@@ -50,8 +50,6 @@ jobs:
         envs: IMAGE_NAME,DOCKER_USERNAME,DOCKER_PASSWORD,GITHUB_SHA
 
         script: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
           docker pull $DOCKER_USERNAME/$IMAGE_NAME:$GITHUB_SHA
 
           docker stop tank-game || true
