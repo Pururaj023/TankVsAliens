@@ -1,16 +1,19 @@
-name: Deploy Tank Game to Kubernetes
+name: Build & Deploy Tank Game
 
 on:
   push:
     branches:
       - main
 
-env:
-  IMAGE_NAME: tank-vs-aliens
-
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    env:
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
 
     steps:
 
@@ -18,7 +21,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. Setup Node (optional for lint/test)
+    # 2. Setup Node (for validation build)
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
@@ -28,24 +31,23 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    # 4. Build React app (optional but good validation)
-    - name: Build app
+    # 4. Build app (sanity check)
+    - name: Build React App
       run: npm run build
 
-    # 5. Login to Docker Hub
+    # 5. Docker Login (from Environment Secrets)
     - name: Docker Login
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # 6. Build Docker Image
+    # 6. Build Docker Image with commit SHA
     - name: Build Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }} .
 
     # 7. Push Docker Image
     - name: Push Docker Image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
+        docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
