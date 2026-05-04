@@ -14,6 +14,8 @@ jobs:
 
     env:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
 
