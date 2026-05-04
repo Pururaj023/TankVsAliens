@@ -38,3 +38,21 @@ jobs:
     - name: Push Docker Image
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
+
+     # 5. Deploy to EC2 via SSH
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
+
+          docker stop tank-game || true
+          docker rm tank-game || true
+
+          docker run -d \
+            -p 80:80 \
+            --name tank-game \
+            ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
