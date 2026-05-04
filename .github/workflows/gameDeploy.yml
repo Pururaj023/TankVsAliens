@@ -46,8 +46,13 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
+
+        envs: IMAGE_NAME,DOCKER_USERNAME,DOCKER_PASSWORD,GITHUB_SHA
+
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+          docker pull $DOCKER_USERNAME/$IMAGE_NAME:$GITHUB_SHA
 
           docker stop tank-game || true
           docker rm tank-game || true
@@ -55,4 +60,5 @@ jobs:
           docker run -d \
             -p 80:80 \
             --name tank-game \
-            ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
+            --restart always \
+            $DOCKER_USERNAME/$IMAGE_NAME:$GITHUB_SHA
