@@ -32,7 +32,7 @@ jobs:
     # 3. Build Docker Image with commit SHA
     - name: Build Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }} ./tank-vs-aliens
 
     # 4. Push Docker Image
     - name: Push Docker Image
