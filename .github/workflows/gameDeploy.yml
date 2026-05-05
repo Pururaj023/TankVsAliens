@@ -32,14 +32,17 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # 3. Build Docker Image with commit SHA
-    - name: Build Docker Image
+    - name: Build Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }} ./tank-vs-aliens
+        docker build -t $DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }} \
+                     -t $DOCKER_USERNAME/$IMAGE_NAME:latest \
+                     ./tank-vs-aliens
 
     # 4. Push Docker Image
-    - name: Push Docker Image
+    - name: Push Image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:${{ github.sha }}
+        docker push $DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }}
+        docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
 
      # 5. Deploy to EC2 via SSH
     - name: Deploy to EC2
