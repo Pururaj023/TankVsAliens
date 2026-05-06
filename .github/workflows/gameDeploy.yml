@@ -39,20 +39,20 @@ jobs:
     # 3. Build Image
     - name: Build Image
       run: |
-        docker build -t $DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }} \
+        docker build -t $DOCKER_USERNAME/$IMAGE_NAME:${{ github.run_number }} \
                      -t $DOCKER_USERNAME/$IMAGE_NAME:latest \
                      ./tank-vs-aliens
 
     # 4. Push Image
     - name: Push Image
       run: |
-        docker push $DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }}
+        docker push $DOCKER_USERNAME/$IMAGE_NAME:${{ github.run_number }}
         docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
 
     # 5. Update image tag (ROBUST - works every time)
     - name: Update deployment.yaml image tag
       run: |
-        sed -i "s|$DOCKER_USERNAME/$IMAGE_NAME:.*|$DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }}|g" tank-vs-aliens/k8s/deployment.yaml
+        sed -i "s|$DOCKER_USERNAME/$IMAGE_NAME:.*|$DOCKER_USERNAME/$IMAGE_NAME:${{ github.run_number }}|g" tank-vs-aliens/k8s/deployment.yaml
 
     # 6. Verify change (optional but useful)
     - name: Verify file
@@ -64,5 +64,5 @@ jobs:
         git config --global user.name "github-actions"
         git config --global user.email "actions@github.com"
         git add tank-vs-aliens/k8s/deployment.yaml
-        git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
+        git commit -m "Update image tag to ${{ github.run_number }}" || echo "No changes"
         git push origin main
