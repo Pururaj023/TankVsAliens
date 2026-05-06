@@ -47,4 +47,4 @@ jobs:
     # 5. Update Kubernetes manifest with new image tag
     - name: Update deployment.yaml image tag
       run: |
-        sed -i "s|image:.*|image: $DOCKER_USERNAME/$IMAGE_NAME:${{ github.sha }}|g" TankVsAliens/k8s/deployment.yaml
+        sed -i "s|IMAGE_TAG|${{ github.sha }}|g" TankVsAliens/k8s/deployment.yaml
