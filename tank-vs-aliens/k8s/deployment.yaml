@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: tank-game
 spec:
-  replicas: 6
+  replicas: 2
   selector:
     matchLabels:
       app: tank-game
