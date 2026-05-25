@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: tank-game-container
-        image: pururajchoudhary23/tankvsalien:23
+        image: pururajchoudhary23/tankvsalien:24
         ports:
         - containerPort: 80
